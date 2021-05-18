@@ -1,0 +1,245 @@
+﻿<Window x:Class="CRP6_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CRP6_GUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="1080" Width="1920"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"
+        
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="White"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="#FFF7F7F7"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+
+    <!--Note: Change to 'Any CPU' or 'x86' to edit the display [VS designer(display viewer) is not built for 'x64']-->
+    <Window.Resources>
+        <Storyboard x:Key="ViewOpen">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Height)"
+                                           Storyboard.TargetName="ViewGrid">
+                <EasingDoubleKeyFrame KeyTime="0:0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="600"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="ViewClose">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Height)"
+                                           Storyboard.TargetName="ViewGrid">
+                <EasingDoubleKeyFrame KeyTime="0:0" Value="600"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Button.Click"
+                      SourceName="ViewBtn">
+            <BeginStoryboard Storyboard="{StaticResource ViewOpen}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="Button.Click"
+                      SourceName="CaptureBtn">
+            <BeginStoryboard Storyboard="{StaticResource ViewOpen}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="Button.Click"
+                      SourceName="ReturnBtn">
+            <BeginStoryboard Storyboard="{StaticResource ViewClose}"/>
+        </EventTrigger>
+    </Window.Triggers>
+
+
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="images/1.jpg" Opacity=".7"/>
+        </Grid.Background>
+        <Grid Height="700" Width="1000" Background="#FFF7F7F7" Margin=" 0 0 00 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="290"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="55*"/>
+                <RowDefinition Height="600*"/>
+                <RowDefinition Height="50*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="2" Grid.Column="2">
+                <materialDesign:Snackbar x:Name="Snackbar" HorizontalAlignment="Center"  Margin="70 0 0 0"
+                                         Foreground="Black" Background="#FFF7F7F7"
+                                         MessageQueue="{materialDesign:MessageQueue}"/>
+            </Grid>
+
+            <Grid Grid.ColumnSpan="2" Grid.Row="0" Background="#FFF7F7F7" x:Name="Grid" MouseDown="Grid_MouseDown">
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="CRP6 - VISION INSPECTION" Foreground="Gray" FontWeight="Bold"
+                               FontSize="12" VerticalAlignment="Center" Margin="0 0 670 0 " />
+
+                    <Button x:Name="PhotoDirectBtn" Click="PhotoDirectBtn_Click" Margin="10 0"
+                        ToolTip="file directory" VerticalAlignment="Center"
+                        BorderBrush="{x:Null}" Width="25" Height="25"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" >
+                        <materialDesign:PackIcon Kind="InsertPhoto"/>
+                    </Button>
+                    <Button x:Name="ExitBtn" Click="ExitBtn_Click"  Margin="10 0 30 0"
+                        BorderBrush="{x:Null}" Width="25" Height="25"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
+                        <materialDesign:PackIcon Kind="Power"/>
+                    </Button>
+
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="1">
+                <!--streaming display, aspect ratio = 5:4-->
+                <materialDesign:Card Height="512" Width="640" Margin="30 20 0 0"
+                                     HorizontalAlignment="Left" VerticalAlignment="Top"
+                                     materialDesign:ShadowAssist.ShadowDepth="Depth3">
+                    <Grid Background="Black">
+                        <materialDesign:PackIcon Kind="Play" Width="50" Height="50" x:Name="Play" 
+                                                 Foreground="white" 
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <!--streaming display grid-->
+                        <Grid x:Name="StreamGrid" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </materialDesign:Card>
+                <materialDesign:Badged x:Name="ViewBadge" BadgeColorZoneMode="Dark" VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Center">
+                    <Button  Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                                 materialDesign:ButtonAssist.CornerRadius="20"
+                                 Content="View" FontSize="15" x:Name="ViewBtn" Width="70" Height="45" Margin="0 0 0 3"
+                                 Click="ViewBtn_Click" VerticalAlignment="Bottom"/>
+                </materialDesign:Badged>
+
+            </Grid>
+
+            <Grid Grid.Column="0" Grid.RowSpan="2" Grid.Row="1">
+                <materialDesign:Card Height="647" Width="260" VerticalAlignment="Top" HorizontalAlignment="Right">
+                    <materialDesign:Card.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF67F9F3" Offset="0"/>
+                            <GradientStop Color="#FF00AEFF" Offset="1"/>
+                        </LinearGradientBrush>
+                    </materialDesign:Card.Background>
+                    <StackPanel>
+                        <Grid Height="200" Width="auto">
+                            <Image Source="images/artclogo.png" Margin="0 5 0 0"/>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Margin="0">
+                            <TextBox x:Name="ImageNaming" Width="220" Margin="20 0"
+                                     materialDesign:HintAssist.Hint="Name:        e.g. XenethImage" 
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0 15 0 10">
+                            <ComboBox Width="170" Height="40" Margin="20 0 0 0" x:Name="CalibrationFile"
+                                  materialDesign:HintAssist.Hint="Calibration File" Background="#FF3FDCFB"
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}" >
+                                <ComboBoxItem IsSelected="True">
+                                    XC-TrueNUC-HG-ITR_7269
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    XC-TrueNUC-LG-ITR_7269
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    XC-HG-ITR-500us_7269
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    XC-HG-ITR-5000us_7269
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    XC-LG-ITR-500us_7269
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    XC-LG-ITR-5000us_7269
+                                </ComboBoxItem>
+                            </ComboBox>
+                            <Button Content="load" IsEnabled="False" x:Name="LoadCalibrationBtn" 
+                                Click="LoadCalibrationBtn_Click" Margin="5 0" Width="60" Height="25"/>
+                        </StackPanel>
+
+                        <ToggleButton x:Name="ConnectTog"
+                              ToggleButton.Checked="ConnectTog_Checked"
+                              ToggleButton.Unchecked="ConnectTog_Unchecked"
+                              materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                              Style="{StaticResource MaterialDesignActionLightToggleButton}"
+                              Height="70" Width="70" FontSize="12" Margin=" 0 5 0 10">
+                            <ToggleButton.Content>
+                                Connect
+                            </ToggleButton.Content>
+                            <materialDesign:ToggleButtonAssist.OnContent>
+                                Disconnect
+                            </materialDesign:ToggleButtonAssist.OnContent>
+                        </ToggleButton>
+
+                        <ToggleButton x:Name="StreamBtn" IsEnabled="False" Width="70" Height="70" 
+                                      ToggleButton.Checked="StreamBtn_Checked"  FontSize="12" 
+                                      ToggleButton.Unchecked="StreamBtn_Unchecked" Margin="0 10"
+                                      materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                                      Style="{StaticResource MaterialDesignActionToggleButton}">
+                            <ToggleButton.Content>
+                                Stream
+                            </ToggleButton.Content>
+                            <materialDesign:ToggleButtonAssist.OnContent>
+                                <materialDesign:PackIcon Kind="Square" Width="25" Height="25" />
+                            </materialDesign:ToggleButtonAssist.OnContent>
+                        </ToggleButton>
+
+                        <!--high value padding to shift the button-->
+                        <materialDesign:Badged x:Name="CountingBadge" BadgeColorZoneMode="PrimaryDark" 
+                                                   Margin="0 10" Padding="0" HorizontalAlignment="Center">
+                            <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" 
+                                    IsEnabled="False"
+                                    x:Name="CaptureBtn" Click="CaptureBtn_Click" Width="70" Height="70">
+                                <TextBlock FontSize="12" Text="GrabFrame"/>
+                            </Button>
+                        </materialDesign:Badged>
+                        <Button  Style="{StaticResource MaterialDesignFloatingActionButton}" Margin=" 0 10"
+                                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding isModel}"
+                                 materialDesign:ButtonProgressAssist.Value="-1" Click="Model_Click"
+                                 materialDesign:ButtonProgressAssist.IsIndeterminate="True">
+                            <TextBlock FontSize="10" TextAlignment ="Center">Change<LineBreak/>Model</TextBlock>
+                        </Button>
+                        
+                    </StackPanel>
+                </materialDesign:Card>
+            </Grid>
+
+            <!-- Open drawer: change settings Height="600" <> "0"-->
+            <Grid Grid.Column="1" Grid.Row="1" Height="00" x:Name="ViewGrid" VerticalAlignment="Top" >
+                <!--Change Height=[545<>45] to edit items underneath-->
+
+                <materialDesign:Card Height="600" Width="680" HorizontalAlignment="Center" Margin="0"
+                                     Background="{DynamicResource PrimaryHueMidBrush}" >
+                    <Grid HorizontalAlignment="Center" Height="565">
+                        <!--Either display 1-->
+                        <TabControl Background="{DynamicResource PrimaryHueMidBrush}" TabStripPlacement="Bottom" 
+                                    Width="650" HorizontalContentAlignment="Left" BorderBrush="{x:Null}">
+
+                            <TabItem Background="{DynamicResource PrimaryHueLightBrush}" Header="Processed Image">
+                                <materialDesign:Card Width="640" Height="512" VerticalAlignment="Center"
+                                                     materialDesign:ShadowAssist.ShadowDepth="Depth3" Background="AliceBlue">
+                                    <Grid x:Name="ProcessedImageDisplay" />
+                                </materialDesign:Card>
+                            </TabItem>
+                            <TabItem Background="{DynamicResource PrimaryHueLightBrush}" Header="Raw Image">
+                                <materialDesign:Card Width="640" Height="512" VerticalAlignment="Center"
+                                                     materialDesign:ShadowAssist.ShadowDepth="Depth3" Background="AliceBlue">
+                                    <Grid x:Name="RawImageDisplay"/>
+                                </materialDesign:Card>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+                </materialDesign:Card>
+                <Button x:Name="ReturnBtn" Height="45" Width="45" Margin="0 0 0 8" Click="ReturnBtn_Click"
+                        HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
+                    <materialDesign:PackIcon Kind="AlphabetX" Height="45" Width="45" 
+                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>
